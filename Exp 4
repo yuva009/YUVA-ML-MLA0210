@@ -1,0 +1,50 @@
+import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+iris = load_iris()
+X = iris.data
+y = iris.target.reshape(-1, 1)
+encoder = OneHotEncoder(sparse_output=False)
+y = encoder.fit_transform(y)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+def sigmoid_derivative(x):
+    return x * (1 - x)
+input_neurons = 4
+hidden_neurons = 5
+output_neurons = 3
+learning_rate = 0.1
+epochs = 5000
+W1 = np.random.uniform(size=(input_neurons, hidden_neurons))
+B1 = np.random.uniform(size=(1, hidden_neurons))
+W2 = np.random.uniform(size=(hidden_neurons, output_neurons))
+B2 = np.random.uniform(size=(1, output_neurons))
+for epoch in range(epochs):
+    # Forward Propagation
+    hidden_input = np.dot(X_train, W1) + B1
+    hidden_output = sigmoid(hidden_input)
+    final_input = np.dot(hidden_output, W2) + B2
+    final_output = sigmoid(final_input)
+    d_output = error * sigmoid_derivative(final_output)
+    error_hidden = d_output.dot(W2.T)
+    d_hidden = error_hidden * sigmoid_derivative(hidden_output)
+    W2 += hidden_output.T.dot(d_output) * learning_rate
+    B2 += np.sum(d_output, axis=0, keepdims=True) * learning_rate
+    W1 += X_train.T.dot(d_hidden) * learning_rate
+    B1 += np.sum(d_hidden, axis=0, keepdims=True) * learning_rate
+    if epoch % 500 == 0:
+        print(f"Epoch {epoch} - Loss: {np.mean(np.abs(error)):.4f}")
+hidden_input_test = np.dot(X_test, W1) + B1
+hidden_output_test = sigmoid(hidden_input_test)
+final_input_test = np.dot(hidden_output_test, W2) + B2
+final_output_test = sigmoid(final_input_test)
+predicted_class = np.argmax(final_output_test, axis=1)
+actual_class = np.argmax(y_test, axis=1)
+accuracy = np.mean(predicted_class == actual_class) * 100
+print("\nFinal Accuracy: ", accuracy, "%")

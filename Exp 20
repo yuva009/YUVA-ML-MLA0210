@@ -1,0 +1,19 @@
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+months = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).reshape(-1, 1)
+sales = np.array([120, 135, 150, 160, 180, 200, 210, 220, 230, 240, 260, 275])
+model = LinearRegression()
+model.fit(months, sales)
+future_months = np.array([13, 14, 15]).reshape(-1, 1)
+future_sales = model.predict(future_months)
+print("Future Month Numbers:", future_months.flatten())
+print("Predicted Future Sales:", future_sales)
+plt.scatter(months, sales, color='blue', label='Actual Sales')
+plt.plot(months, model.predict(months), color='green', label='Trend Line')
+plt.scatter(future_months, future_sales, color='red', label='Predicted Sales')
+plt.xlabel("Month Number")
+plt.ylabel("Sales")
+plt.title("Future Sales Prediction using Linear Regression")
+plt.legend()
+plt.show()

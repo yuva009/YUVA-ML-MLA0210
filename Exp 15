@@ -1,0 +1,20 @@
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# 1. Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Create a DataFrame for better visualization (optional, but good for understanding)
+df_iris = pd.DataFrame(data=X, columns=iris.feature_names)
+df_iris['target'] = y
+
+print("Iris Dataset Head:")
+display(df_iris.head())
+print("\nIris Target Names:", iris.target_names)

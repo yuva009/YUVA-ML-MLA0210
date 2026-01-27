@@ -1,0 +1,55 @@
+import csv
+def more_general(h1, h2):
+    """Check if hypothesis h1 is more general than h2"""
+    more_general_parts = []
+    for x, y in zip(h1, h2):
+        mg = x == "?" or (x != "0" and (x == y))
+        more_general_parts.append(mg)
+    return all(more_general_parts)
+def generalize_S(example, S):
+    """Generalize S only for positive example"""
+    for i in range(len(S)):
+        if S[i] == "0":
+            S[i] = example[i]
+        elif S[i] != example[i]:
+            S[i] = "?"
+    return S
+def specialize_G(example, G, S):
+    """Specialize G only for negative example"""
+    new_G = []
+    for g in G:
+        if all(g[i] == "?" or g[i] == example[i] for i in range(len(example))):
+            for i in range(len(g)):
+                if g[i] == "?":
+                    if S[i] != example[i]:
+                        new_g = g.copy()
+                        new_g[i] = S[i]
+                        new_G.append(new_g)
+    return new_G
+def candidate_elimination(filename):
+    with open(filename) as file:
+        reader = csv.reader(file)
+        data = list(reader)
+    # Initialize S and G
+    S = ["0"] * (len(data[0]) - 1)
+    G = [["?"] * (len(data[0]) - 1)]
+    print("Initial S:", S)
+    print("Initial G:", G)
+    for row in data:
+        example = row[:-1]
+        label = row[-1]
+        if label == "Yes":  
+            # Positive example → Generalize S and remove inconsistent G
+            S = generalize_S(example, S)
+            G = [g for g in G if more_general(g, S)]
+        else:
+            # Negative example → Specialize G
+            G = specialize_G(example, G, S)
+        print("\nExample:", example, "Label:", label)
+        print("S:", S)
+        print("G:", G)
+    print("\n===== FINAL VERSION SPACE =====")
+    print("Most Specific S:", S)
+    print("Most General G:", G)
+    return S, G
+candidate_elimination("training_data.csv")

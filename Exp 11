@@ -1,0 +1,25 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix
+data = {
+    'Income': [35000, 50000, 62000, 30000, 45000, 70000, 29000, 80000, 55000, 40000],
+    'Age': [25, 35, 45, 22, 38, 50, 23, 48, 33, 29],
+    'Loan_Amount': [15000, 20000, 25000, 10000, 18000, 30000, 9000, 28000, 22000, 14000],
+    'Credit_History': [1, 1, 1, 0, 1, 1, 0, 1, 1, 0],   # 1 = good history, 0 = bad
+    'Credit_Score': ['Good','Good','Good','Poor','Average','Good','Poor','Good','Average','Poor']
+}
+df = pd.DataFrame(data)
+df['Credit_Score'] = df['Credit_Score'].map({'Poor':0, 'Average':1, 'Good':2})
+X = df[['Income', 'Age', 'Loan_Amount', 'Credit_History']]
+y = df['Credit_Score']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print("Actual Labels:   ", list(y_test))
+print("Predicted Labels:", list(y_pred))
+acc = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+print("\nAccuracy:", acc * 100, "%")
+print("\nConfusion Matrix:\n", cm)

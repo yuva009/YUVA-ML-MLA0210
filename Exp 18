@@ -1,0 +1,32 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import Perceptron
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+# 1. Load the Iris dataset
+iris = load_iris()
+X = iris.data   # features
+y = iris.target # labels (0,1,2)
+
+# 2. Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 3. Initialize and train the Perceptron model
+# max_iter: The maximum number of passes over the training data (epochs).
+# eta0: The constant step size (learning rate) for the updates.
+perceptron_model = Perceptron(max_iter=1000, eta0=0.1, random_state=42)
+perceptron_model.fit(X_train, y_train)
+
+print("Perceptron model trained successfully.")
+
+# 4. Make predictions on the test set
+y_pred_perceptron = perceptron_model.predict(X_test)
+
+# 5. Evaluate the model
+accuracy_perceptron = accuracy_score(y_test, y_pred_perceptron)
+cm_perceptron = confusion_matrix(y_test, y_pred_perceptron)
+
+print("\nPredicted Labels (Perceptron):", y_pred_perceptron)
+print("Actual Labels (Perceptron):   ", y_test)
+print(f"\nPerceptron Accuracy: {accuracy_perceptron * 100:.2f}%")
+print("\nPerceptron Confusion Matrix:\n", cm_perceptron)

@@ -1,0 +1,30 @@
+import numpy as np
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+# Sample training data
+# X = Hours studied
+# y = Marks scored
+X = np.array([[1], [2], [3], [4], [5]])
+y = np.array([40, 50, 60, 65, 70])
+
+# Create model
+model = LinearRegression()
+
+# Train model
+model.fit(X, y)
+
+# Predict
+y_pred = model.predict(X)
+
+print("Slope (m):", model.coef_[0])
+print("Intercept (c):", model.intercept_)
+print("Predicted values:", y_pred)
+
+# Plot
+plt.scatter(X, y, label="Actual Data")
+plt.plot(X, y_pred, label="Best Fit Line")
+plt.xlabel("Hours Studied")
+plt.ylabel("Marks Scored")
+plt.legend()
+plt.show()

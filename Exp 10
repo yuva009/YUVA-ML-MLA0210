@@ -1,0 +1,26 @@
+import numpy as np
+X = np.array([1, 2, 5, 6, 7, 8], dtype=float)
+k = 2
+means = np.array([2.0, 7.0])
+variances = np.array([1.0, 1.5])
+weights = np.array([0.5, 0.5])   
+def gaussian(x, mean, var):
+    return (1 / np.sqrt(2 * np.pi * var)) * np.exp(-(x - mean)**2 / (2 * var))
+for step in range(10):   # run for 10 iterations
+    r = np.zeros((len(X), k))
+    for i in range(k):
+        r[:, i] = weights[i] * gaussian(X, means[i], variances[i]
+    r = r / r.sum(axis=1, keepdims=True)
+    for i in range(k):
+        N_k = r[:, i].sum()
+        means[i] = np.sum(r[:, i] * X) / N_k
+        variances[i] = np.sum(r[:, i] * (X - means[i])**2) / N_k
+        weights[i] = N_k / len(X)
+    print(f"\nIteration {step+1}")
+    print("Means:", means)
+    print("Variances:", variances)
+    print("Weights:", weights)
+print("\nFinal Estimated Parameters:")
+print("Means:", means)
+print("Variances:", variances)
+print("Weights:", weights)
